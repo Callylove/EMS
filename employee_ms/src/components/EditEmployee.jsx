@@ -2,10 +2,11 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditEmployee() {
     const {id} = useParams();
+    const navigate = useNavigate();
    
     // console.log(id);
     
@@ -15,7 +16,7 @@ export default function EditEmployee() {
         nin: '',
         fullname: '',
         email: '',
-  
+        db:'',
         password:''
       });
     const [employee, setEmployee] = useState({
@@ -57,7 +58,7 @@ export default function EditEmployee() {
 
             })
         }else {
-            alert(res.data.error)
+            setErrors({...errors, db: res.data.error})
         }
 }).catch(err=>console.log(err))
 
@@ -72,7 +73,7 @@ export default function EditEmployee() {
 
 
 
-    console.log(employee);
+    // console.log(employee);
     
       // Validation function for the entire form
   const validateForm = () => {
@@ -133,7 +134,12 @@ if (!validateForm()) {
   }
 axios.put(`http://localhost:3000/admin/edit_employee/${id}`, employee)
 .then(res=>{
-    console.log(res.data);
+    if(res.data.Status){
+        navigate('/admin/employees')
+    }
+    else {
+        setErrors({...errors, db: res.data.error})
+    }
     
 })
 .catch(err=>{
@@ -148,6 +154,7 @@ axios.put(`http://localhost:3000/admin/edit_employee/${id}`, employee)
   
         <h2 className='text-xl font-bold tracking-medium mb-6 text-center text-green-600'>Edit Employee</h2>
         <form className="grid grid-rows-2 gap-2"  method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
+        {errors.db && <span className="text-red-600">{errors.db}</span>}
       <label htmlFor="fullname" className="font-normal tracking-medium">Full Name</label>
 
       <input

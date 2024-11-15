@@ -22,7 +22,7 @@ export default function AddEmployee() {
                 
                 setCategory(res.data.Result)
             }else {
-                alert(res.data.error)
+              setErrors({...errors, db: res.data.error})
             }
     }).catch(err=>console.log(err))
     },[])
@@ -147,7 +147,7 @@ export default function AddEmployee() {
         if(response.data.Status){
           navigate('/admin/employees')
               } else {
-                  alert(response.data.error)
+                setErrors({...errors, db: response.data.error})
               }
       } catch (error) {
         console.error('Error uploading data:', error);
@@ -215,6 +215,7 @@ export default function AddEmployee() {
   
         <h2 className='text-xl font-bold tracking-medium mb-6 text-center text-green-600'>Add Employee</h2>
         <form className="grid grid-rows-2 gap-2" onSubmit={handleSubmit} method="POST" encType="multipart/form-data">
+        {errors.db && <span className="text-red-600">{errors.db}</span>}
       <label htmlFor="fullname" className="font-normal tracking-medium">Full Name</label>
 
       <input

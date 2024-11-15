@@ -159,7 +159,63 @@ router.put('/edit_employee/:id', (req,res)=>{
     return res.json({ Status: true, Result: result });
 })
 })
+router.delete('/delete_employee/:id',(req,res)=>{
+  const {id} = req.params
+  const sql = "DELETE from employees WHERE id = ?"
+  conn.query(sql,[id], (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
 
+router.get('/admin_count', (req,res)=>{
+  const sql = "SELECT count(id) as admin from admin"
+  conn.query(sql, (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
+router.get('/employee_count', (req,res)=>{
+  const sql = "SELECT count(id) as employee from employees"
+  conn.query(sql, (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
+router.get('/salary_count', (req,res)=>{
+  const sql = "SELECT sum(salary) as salary from employees"
+  conn.query(sql, (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
+router.get('/admin_records', (req,res)=>{
+  const sql = "SELECT * from admin"
+  conn.query(sql, (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
+router.get('/logout', (req,res)=>{
+  res.clearCookie('token')
+  return res.json({ Status: true});
+
+})
 //Admin dashboard route
 router.get('/dashboard', (req, res) => {
   res.json({ message: 'Welcome to the Admin Dashboard' });

@@ -19,7 +19,7 @@ const Category = () => {
   return (
     <div className=" px-2 md:px-5 mt-5 h-full">
         <div className="flex justify-center">
-        <h2 className="text-3xl">Category List</h2>
+        <h1  className="font-bold text-xl text-center">Category List</h1>
         </div>
     
     

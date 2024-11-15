@@ -1,22 +1,20 @@
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHouse } from "react-icons/fa6";
 import { FaUserFriends } from "react-icons/fa";
 import { TbCategoryFilled } from "react-icons/tb";
 import { IoPersonSharp } from "react-icons/io5";
 import { FaPowerOff } from "react-icons/fa";
+import axios from 'axios';
 // import React from 'react';
 
 // eslint-disable-next-line react/prop-types
 const SidebarItem = ({ to, children }) => {
   const location = useLocation(); // Get current location
   const isActive = location.pathname === to; // Check if the current path matches the link
-  console.log(isActive);
-  console.log(location.pathname);
-  console.log(to);
   
   
-  
+
 
   return (
     <div className={`flex cursor-pointer items-center ${isActive ? 'bg-gray-400' : 'hover:bg-gray-400'} px-0 md:px-6`}>
@@ -33,6 +31,16 @@ const SidebarItem = ({ to, children }) => {
 };
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  axios.defaults.withCredentials = true
+  const handleLogout = () => {
+    axios.get('http://localhost:3000/admin/logout')
+    .then(res=>{
+      if(res.data.Status){
+        navigate('auth/login')
+      }
+    })
+  }
   return (
     <div className="w-32 md:w-64 bg-gray-700 text-white  ">
          <div className="p-4 bg-gray-700 cursor-pointer">
@@ -50,7 +58,7 @@ const Sidebar = () => {
         <SidebarItem to="/admin/profile"><div className='flex items-center gap-1 md:gap-4'>
         <IoPersonSharp /> Profile
         </div></SidebarItem>
-        <SidebarItem to="/admin/logout"><div className='flex items-center gap-1 md:gap-4'>
+        <SidebarItem to="/admin/logout" ><div className='flex items-center gap-1 md:gap-4' onClick={handleLogout}>
         <FaPowerOff/> Logout
         </div></SidebarItem>
 

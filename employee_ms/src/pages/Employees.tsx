@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Employees = () => {
   const [employee,setEmployee] = useState<any>([])
+  const navigate = useNavigate()
+  const [err, setErr] = useState('')
   useEffect(()=>{
       axios.get('http://localhost:3000/admin/employee').then(res=>{
           if(res.data.Status){
@@ -38,16 +40,30 @@ const Employees = () => {
       ...emp,  // Spread other employee fields
       category_id: categoryMap[emp.category_id] || 'Unknown Category'  // Replace with category name
   }));
+  const handleDelete = (id) => {
+axios.delete(`http://localhost:3000/admin/delete_employee/${id}`)
+.then(res=>{
+  if(res.data.Status){
+    window.location.reload()
+  }else{
+    setErr(res.data.error)
+  }
+})
+.catch(err=>{
+  console.log(err);
   
+})
+  }
 
   
   return (
-   <div className="px-2 md:px-5 mt-5 h-full w-full">
+   <div className="px-2  mt-5 h-full w-full">
         <div className="flex justify-center">
-        <h2 className="text-3xl">Employee List</h2>
+        <h1  className="font-bold text-xl text-center">Employee List</h1>
         </div>
      
         <div className='mt-6 mb-12'>
+        {err && <span className="text-red-600">{err}</span>}
         {/* <table className="table-auto w-full">
             <thead className=" border-b-2 h-full w-full flex items-start justify-between">
                 <th className=' h-full'>Full Name</th>
@@ -96,7 +112,7 @@ const Employees = () => {
         </table> */}
         <table className="table-auto w-full border-collapse">
   <thead className="bg-gray-100 border-b-2">
-    <tr>
+    <tr >
       <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Full Name</th>
       <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Image</th>
       <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Email</th>
@@ -112,7 +128,7 @@ const Employees = () => {
     {
       employeesWithCategoryName.map((e) => (
         <tr key={e.id} className="border-b hover:bg-gray-50">
-          <td className="px-4 py-2 text-sm text-gray-700">{e.fullname}</td>
+          <td className="px-4 py-2 text-sm text-gray-700">{e.fullname.charAt(0).toUpperCase() + e.fullname.slice(1).toLowerCase()}</td>
           <td className=" text-sm">
             <img src={`http://localhost:3000/images/${e.image}`} alt={e.fullname} className="h-16 w-16 rounded-full object-cover" />
           </td>
@@ -124,7 +140,7 @@ const Employees = () => {
           <td className="px-4 py-2 text-sm text-gray-700">{e.salary}</td>
           <td className="px-4 py-2 text-sm flex ">
             <Link to={`/admin/edit_employee/${e.id}`} className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none">Edit</Link>
-            <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none ml-2">Delete</button>
+            <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none ml-2" onClick={()=>handleDelete(e.id)}>Delete</button>
           </td>
         </tr>
       ))
