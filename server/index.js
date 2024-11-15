@@ -14,6 +14,7 @@ app.use(express.json())
 app.use('/admin', AdminRouter)
 app.use('/user',UserRouter)
 app.use('/auth',AuthRouter)
+app.use(express.static('public'))
 
 // Example of protecting a route (middleware to check token)
 app.use('/admin', (req, res, next) => {

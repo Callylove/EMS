@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+// import React from 'react';
 
 export default function Register() {
     const [formData, setFormData] = useState({

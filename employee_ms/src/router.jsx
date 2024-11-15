@@ -1,4 +1,4 @@
-
+// import React from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import Layout from './layout';
 import AdminDashboard from './pages/AdminDashboard';  
@@ -11,6 +11,8 @@ import UserDashboard from './pages/UserDashboard';
 import AuthLayout from './Authlayout';
 import AddEmployee from './components/AddEmployee';
 import Register from './components/Register';
+import EditEmployee from './components/EditEmployee';
+
 
 const router = createBrowserRouter([
   {
@@ -42,6 +44,10 @@ const router = createBrowserRouter([
       {
         path:'add_employee',
         element:<AddEmployee/>
+      },
+      {
+        path:'edit_employee/:id',
+        element:<EditEmployee />
       }
     ],
   },

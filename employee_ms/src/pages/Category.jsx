@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+// import React from 'react';
 
 const Category = () => {
     const [category,setCategory] = useState([])
@@ -17,7 +17,7 @@ const Category = () => {
     }).catch(err=>console.log(err))
     },[])
   return (
-    <div className="px-5 mt-5 h-auto">
+    <div className=" px-2 md:px-5 mt-5 h-full">
         <div className="flex justify-center">
         <h2 className="text-3xl">Category List</h2>
         </div>

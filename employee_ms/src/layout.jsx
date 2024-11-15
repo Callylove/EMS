@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import { Outlet } from 'react-router-dom';
+// import React from 'react';
 
 const Layout = () => {
   return (
@@ -16,7 +17,7 @@ const Layout = () => {
           <Header />
 
           {/* Main Content */}
-          <main className="flex-1 p-6 bg-gray-100">
+          <main className="flex-1 p-2 md:p-6 bg-gray-100">
             <Outlet /> 
           </main>
 

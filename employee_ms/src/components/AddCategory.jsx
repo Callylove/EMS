@@ -1,7 +1,7 @@
 import axios from 'axios';
 import  { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
+// import React from 'react';
 export default function AddCategory() {
     const [category,setCategory] = useState(null)
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ axios.post('http://localhost:3000/admin/add_category', {category}).then(res=>{
     console.log(res.data);
     
     if(res.data.Status){
-navigate('/category')
+navigate('/admin/category')
     } else {
         alert(res.data.error)
     }

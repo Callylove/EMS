@@ -25,8 +25,12 @@
 import express from 'express'
 import conn from '../utils/db.js'
 import jwt from 'jsonwebtoken'
-
-
+import bcrypt from 'bcryptjs'
+import {upload} from '../utils/uploads.js';
+// import multer from 'multer'
+// import path from 'path'
+// import { fileURLToPath } from 'url'; 
+// import fs from 'fs'
 const router = express.Router()
 
 // Middleware to protect admin routes
@@ -58,20 +62,51 @@ router.post('/add_category', (req, res) => {
 });
 
 
-// Set up multer for file upload (store files in memory)
-// const storage = multer.memoryStorage();  // Store the file in memory
-// const upload = multer({ storage: storage });
+router.post('/add_employee', upload.single('image'), (req, res) => {
+  // // Log the form data and file to check if it's coming through correctly
+  // console.log('Form data:', req.body);
+  // console.log('File data:', req.file);  // This will contain file information
 
-// POST route to handle employee form submission
+  const generateEmployeeId = () => {
+    const prefix = 'EMS-';
+    const randomString = Math.random().toString(36).substr(2, 10); // 10-character random string
+    return prefix + randomString;
+  };
 
- 
+  const employee_id = generateEmployeeId(); // Generate unique employee_id
   
-  
-  
-  
-  
-  
- 
+  if (!req.file) {
+    console.log('No file uploaded.');
+  } else {
+    console.log('File uploaded successfully:', req.file.filename);
+  }
+
+  // Access other form fields from req.body
+  const { fullname, email, phone, password, emp_id, nin, salary, category_id } = req.body;
+
+  // Handle missing required fields
+  if (!fullname || !email || !password || !phone || !nin || !category_id || !salary) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  // If file is uploaded, get its path, else set it as null
+  const imagePath = req.file ? req.file.filename : null;
+
+  // SQL query to insert employee data (ensure to include image path)
+  const query = `
+    INSERT INTO employees (emp_id, fullname, email, password, phone, nin, image, salary, category_id)
+    VALUES ('${employee_id}', '${fullname}', '${email}', '${password}', '${phone}', '${nin}', '${imagePath}', '${salary}', '${category_id}')
+  `;
+
+  // Execute the query
+  conn.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.json({ Status: false, error: 'Query Error' });
+  }
+  return res.json({ Status: true });
+  });
+});
 router.get('/category', (req,res)=>{
     const sql = 'SELECT * from category'
     conn.query(sql, (err,result)=>{
@@ -82,6 +117,49 @@ router.get('/category', (req,res)=>{
         return res.json({ Status: true, Result: result });
     })
 })
+router.get('/employee', (req,res)=>{
+  const sql = 'SELECT * from employees'
+  conn.query(sql, (err,result)=>{
+      if (err) {
+          console.error('Error executing query:', err);
+          return res.json({ Status: false, error: 'Query Error' });
+      }
+      return res.json({ Status: true, Result: result });
+  })
+})
+
+router.get('/employee/:id', (req,res)=> {
+  const {id} = req.params
+ 
+  
+  const sql = 'SELECT * from employees WHERE id = ?'
+  conn.query(sql,[id], (err,result)=>{
+      if (err) {
+          console.error('Error executing query:', err);
+          return res.json({ Status: false, error: 'Query Error' });
+      }
+      return res.json({ Status: true, Result: result });
+  })
+  
+})
+ 
+router.put('/edit_employee/:id', (req,res)=>{
+  const {id} = req.params
+  console.log(req.body);
+  
+  const sql = `UPDATE employees set fullname= ?, email= ?, nin= ?, category_id= ?, salary= ?, phone= ? WHERE id = ?`
+  const values = [
+    req.body.fullname, req.body.email, req.body.nin, req.body.category_id, req.body.salary, req.body.phone
+  ]
+  conn.query(sql,[...values, id], (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
+
 //Admin dashboard route
 router.get('/dashboard', (req, res) => {
   res.json({ message: 'Welcome to the Admin Dashboard' });
