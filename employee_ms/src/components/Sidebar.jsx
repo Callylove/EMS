@@ -1,69 +1,52 @@
+/* eslint-disable react/prop-types */
 
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaHouse } from "react-icons/fa6";
-import { FaUserFriends } from "react-icons/fa";
-import { TbCategoryFilled } from "react-icons/tb";
-import { IoPersonSharp } from "react-icons/io5";
-import { FaPowerOff } from "react-icons/fa";
-import axios from 'axios';
-// import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
-// eslint-disable-next-line react/prop-types
-const SidebarItem = ({ to, children }) => {
+
+const SidebarItem = ({ to, children, onClick }) => {
   const location = useLocation(); // Get current location
   const isActive = location.pathname === to; // Check if the current path matches the link
-  
-  
-
 
   return (
-    <div className={`flex cursor-pointer items-center ${isActive ? 'bg-gray-400' : 'hover:bg-gray-400'} px-0 md:px-6`}>
-
-
-      <Link
-        to={to}
-        className={`block py-2 px-4 rounded `}
-      >
-        {children}
-      </Link>
+    <div className={` cursor-pointer mt-6  ${isActive ? 'bg-gray-400' : 'hover:bg-gray-400'} px-0 md:px-6`}>
+      {to ? (
+        <Link
+          to={to}
+          className={`block  rounded mb-4 `}
+        >
+          {children}
+        </Link>
+      ) : (
+        <button
+          onClick={onClick}
+          className="block  rounded w-full text-left"
+        >
+          {children}
+        </button>
+      )}
     </div>
   );
 };
 
-const Sidebar = () => {
-  const navigate = useNavigate();
-  axios.defaults.withCredentials = true
-  const handleLogout = () => {
-    axios.get('http://localhost:3000/admin/logout')
-    .then(res=>{
-      if(res.data.Status){
-        navigate('auth/login')
-      }
-    })
-  }
-  return (
-    <div className="w-32 md:w-64 bg-gray-700 text-white  ">
-         <div className="p-4 bg-gray-700 cursor-pointer">
-        <Link to='/admin/dashboard' class="text-xl font-semibold">EMS</Link>
-      </div >
-      <SidebarItem to="/admin/dashboard"><div className=' flex items-center gap-1 md:gap-4'>
-        <FaHouse/> Dashboard
-        </div></SidebarItem>
-        <SidebarItem to="/admin/employees"><div className='flex items-center gap-1 md:gap-4'>
-        <FaUserFriends className='h-8 w-6 md:h-4 md:w-4' /> Manage Employees
-        </div></SidebarItem>
-        <SidebarItem to="/admin/category"><div className='flex items-center gap-1 md:gap-4'>
-        <TbCategoryFilled/> Category
-        </div></SidebarItem>
-        <SidebarItem to="/admin/profile"><div className='flex items-center gap-1 md:gap-4'>
-        <IoPersonSharp /> Profile
-        </div></SidebarItem>
-        <SidebarItem to="/admin/logout" ><div className='flex items-center gap-1 md:gap-4' onClick={handleLogout}>
-        <FaPowerOff/> Logout
-        </div></SidebarItem>
 
+const Sidebar = ({ items }) => {
+  return (
+    <div className="sidebar w-32 md:w-64 bg-gray-700 text-white ">
+      <ul>
+      <Link to='/admin/dashboard' class="text-xl font-semibold md:px-6">EMS</Link>
+        {items.map((item, index) => (
+          <li key={index} >
+            
+            <SidebarItem to={item.to} onClick={item.onClick}>
+              <div className='flex gap-4 items-center w-full h-full py-2'>
+              {item.icon} {item.label}
+              </div>
+             
+            </SidebarItem>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
-
 export default Sidebar;

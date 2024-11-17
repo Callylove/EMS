@@ -105,7 +105,7 @@ export default function AdminDashboard() {
        
           <td className="px-4 py-2 text-sm text-gray-700">{e.email}</td>
           <td className="px-4 py-2 text-sm flex ">
-            <Link to={`/admin/edit_employee/${e.id}`} className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none">Edit</Link>
+            <Link to={`/admin/edit_admin/${e.id}`} className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none">Edit</Link>
             <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none ml-2" >Delete</button>
           </td>
         </tr>

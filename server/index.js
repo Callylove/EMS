@@ -4,12 +4,15 @@ import cors from 'cors'
 import { AdminRouter } from './Routes/AdminRoute.js'
 import { UserRouter } from './Routes/UserRoute.js'
 import { AuthRouter } from './Routes/AuthRoute.js'
+import cookieParser from 'cookie-parser';
+ // Add this line to parse cookies
 const app = express()
 app.use(cors({
     origin:'http://localhost:5173',
     methods:['GET','POST','PUT','DELETE'],
     credentials: true
 }))
+app.use(cookieParser()); 
 app.use(express.json())
 app.use('/admin', AdminRouter)
 app.use('/user',UserRouter)

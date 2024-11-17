@@ -75,6 +75,48 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
+// router.post('/login', (req, res) => {
+//   const { email, password } = req.body;
+
+//   // Check if the email belongs to an admin
+//   const adminSql = "SELECT * FROM admin WHERE email = ? AND password = ?";
+//   conn.query(adminSql, [email, password], (err, adminResult) => {
+//     if (err) {
+//       return res.json({ loginStatus: false, error: 'Database error' });
+//     }
+
+//     // If the admin exists
+//     if (adminResult.length > 0) {
+//       const admin = adminResult[0];
+//       const token = jwt.sign({ role: 'admin', email: admin.email }, 'jwt_secret_key', { expiresIn: '1d' });
+
+//       // Set JWT token as a cookie (httpOnly for security)
+//       res.cookie('token', token, { httpOnly: true });
+
+//       return res.json({ loginStatus: true, role: 'admin' });
+//     } else {
+//       // If not an admin, check if it's a user
+//       const userSql = "SELECT * FROM users WHERE email = ? AND password = ?";
+//       conn.query(userSql, [email, password], (err, userResult) => {
+//         if (err) {
+//           return res.json({ loginStatus: false, error: 'Database error' });
+//         }
+
+//         if (userResult.length > 0) {
+//           const user = userResult[0];
+//           const token = jwt.sign({ role: 'user', email: user.email }, 'jwt_secret_key', { expiresIn: '1d' });
+
+//           // Set JWT token as a cookie (httpOnly for security)
+//           res.cookie('token', token, { httpOnly: true });
+
+//           return res.json({ loginStatus: true, role: 'user' });
+//         } else {
+//           return res.json({ loginStatus: false, error: 'User not found or incorrect password' });
+//         }
+//       });
+//     }
+//   });
+// });
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -116,6 +158,35 @@ router.post('/login', (req, res) => {
       });
     }
   });
+});
+
+
+// Middleware to verify JWT and get the role
+function verifyToken(req, res, next) {
+  const token = req.cookies.token; // JWT token is stored in the cookie
+  
+  if (!token) {
+    return res.status(403).json({ message: 'No token provided' });
+  }
+
+  jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+
+    // Attach the decoded role to the request object
+    req.user = decoded; // { role: 'admin', email: 'user@example.com' }
+
+    next(); // Proceed to the next middleware or route handler
+  });
+}
+
+// Example of a route to get the role
+router.get('/dashboard', verifyToken, (req, res) => {
+  const role = req.user.role; // From the decoded JWT payload
+  console.log(role);
+  
+  return res.json({ role });
 });
 
 export { router as AuthRouter };

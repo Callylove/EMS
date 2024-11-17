@@ -34,18 +34,45 @@ import {upload} from '../utils/uploads.js';
 const router = express.Router()
 
 // Middleware to protect admin routes
-router.use('/dashboard', (req, res, next) => {
+// router.use('/dashboard', (req, res, next) => {
   
     
-  const token = req.cookies.token;
+//   const token = req.cookies?.token;
+//   if (!token) {
+//     return res.status(403).json({ message: 'Not authorized' });
+//   }
+//   console.log('Token:', token);
+//   jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
+//     if (err || decoded.role !== 'admin') {
+//       console.log('JWT verification error:', err);
+//       console.log(decoded.role);
+      
+//       return res.status(403).json({ message: 'Not authorized as admin', role: decoded.role });
+//     }
+//     next(); // Allow access to the route if admin
+//   });
+// });
+router.use('/dashboard', (req, res, next) => {
+  const token = req.cookies?.token;
   if (!token) {
     return res.status(403).json({ message: 'Not authorized' });
   }
 
+  // Log the token to ensure it's being sent correctly
+  console.log('Token:', token);
+  
   jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
-    if (err || decoded.role !== 'admin') {
+    if (err) {
+    
+      return res.status(403).json({ message: 'Not authorized, invalid token' });
+    }
+
+   
+    // Check the role to ensure it's 'admin'
+    if (decoded.role !== 'admin') {
       return res.status(403).json({ message: 'Not authorized as admin' });
     }
+
     next(); // Allow access to the route if admin
   });
 });
@@ -211,14 +238,90 @@ router.get('/admin_records', (req,res)=>{
     return res.json({ Status: true, Result: result });
 })
 })
-router.get('/logout', (req,res)=>{
-  res.clearCookie('token')
-  return res.json({ Status: true});
+// router.get('/logout', (req,res)=>{
+//   res.clearCookie('token')
+//   return res.json({ Status: true});
 
+// })
+// Logout Route in Express.js
+router.get('/logout', (req, res) => {
+  // Clear the token cookie
+  res.clearCookie('token', { httpOnly: true, path: '/' });
+
+  // Send a response to the client that the logout was successful
+  res.json({ Status: true });
+});
+router.put('/edit_admin/:id', (req,res)=>{
+  const {id} = req.params
+  console.log(req.body);
+  
+  const sql = `UPDATE admin set email= ? WHERE id = ?`
+  const values = [
+     req.body.email
+  ]
+  conn.query(sql,[...values, id], (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
 })
 //Admin dashboard route
-router.get('/dashboard', (req, res) => {
-  res.json({ message: 'Welcome to the Admin Dashboard' });
-});
+// router.get('/dashboard', (req, res) => {
+//   const token = req.cookies?.token;
+//   if (!token) {
+//     return res.status(403).json({ message: 'Not authorized' });
+//   }
 
+//   // Log the token to ensure it's being sent correctly
+//   console.log('Token:', token);
+  
+//   jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
+//     if (err) {
+//       console.log('JWT verification error:', err);
+//       return res.status(403).json({ message: 'Not authorized, invalid token' });
+//     }
+
+//     console.log('Decoded token:', decoded);
+
+//     // Check the role to ensure it's 'admin'
+//     if (decoded.role !== 'admin') {
+//       console.log('Role:', decoded.role);  // Log role for debugging
+//       return res.status(403).json({ message: 'Not authorized as admin', role: decoded.role });
+//     }
+//   })
+//   res.json({ message: 'Welcome to the Admin Dashboard', role: decoded.role });
+// });
+router.get('/dashboard', (req, res) => {
+  const token = req.cookies?.token;
+
+  // If no token is found, return unauthorized error
+  if (!token) {
+    return res.status(403).json({ message: 'Not authorized' });
+  }
+
+  // Log the token to ensure it's being sent correctly
+  // console.log('Token:', token);
+
+  // Verify the token
+  jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
+    if (err) {
+      // console.log('JWT verification error:', err);
+      return res.status(403).json({ message: 'Not authorized, invalid token' });
+    }
+
+    // Log decoded token to ensure the contents are correct
+    console.log('Decoded token:', decoded);
+
+    // Check if the decoded role is 'admin'
+    if (decoded.role !== 'admin') {
+      // console.log('Role:', decoded.role);  // Log role for debugging
+      return res.status(403).json({ message: 'Not authorized as admin', role: decoded.role });
+    }
+
+    // All checks passed, send a response with the admin dashboard message
+    return res.json({ message: 'Welcome to the Admin Dashboard', role: decoded.role });
+  });
+});
 export {router as AdminRouter}

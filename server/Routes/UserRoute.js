@@ -39,15 +39,67 @@ router.use('/dashboard', (req, res, next) => {
 
   jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
     if (err || decoded.role !== 'user') {
-      return res.status(403).json({ message: 'Not authorized as user' });
+      return res.status(403).json({ message: 'Not authorized as user',Result: decoded.role });
     }
     next(); // Allow access to the route if user
   });
 });
 
+// const authenticateJWT = (req, res, next) => {
+//   const token = req.cookies.token;  // Retrieve token from cookies
+
+//   if (!token) {
+//     return res.status(401).json({ error: 'Access denied. No token provided.' });
+//   }
+
+//   try {
+//     // Verify the token and decode it
+//     const decoded = jwt.verify(token, 'jwt_secret_key');
+//     req.user = decoded;  // Attach user information to the request
+//     next();  // Proceed to the next route handler
+//   } catch (error) {
+//     return res.status(400).json({ error: 'Invalid or expired token' });
+//   }
+// };
+
+// // Protect the /user/role route
+// router.get('/role', authenticateJWT, (req, res) => {
+//   const { role } = req.user;  // Extract role from decoded token
+//   console.log(role);
+  
+//   return res.json({ role });
+// });
+
 //User dashboard route
 router.get('/dashboard', (req, res) => {
-  res.json({ message: 'Welcome to the User Dashboard' });
+    // If no token is found, return unauthorized error
+    if (!token) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+  
+    // Log the token to ensure it's being sent correctly
+    // console.log('Token:', token);
+  
+    // Verify the token
+    jwt.verify(token, 'jwt_secret_key', (err, decoded) => {
+      if (err) {
+        // console.log('JWT verification error:', err);
+        return res.status(403).json({ message: 'Not authorized, invalid token' });
+      }
+  
+      // Log decoded token to ensure the contents are correct
+      console.log('Decoded token:', decoded);
+  
+      // Check if the decoded role is 'admin'
+      if (decoded.role !== 'user') {
+        // console.log('Role:', decoded.role);  // Log role for debugging
+        return res.status(403).json({ message: 'Not authorized as admin', role: decoded.role });
+      }
+  
+      // All checks passed, send a response with the admin dashboard message
+      return res.json({ message: 'Welcome to the User Dashboard', role: decoded.role });
+    });
+
 });
 
 export {router as UserRouter}
