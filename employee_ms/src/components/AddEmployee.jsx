@@ -319,7 +319,7 @@ export default function AddEmployee() {
         className="rounded px-4 h-8 focus:outline-none focus:ring-2 focus:ring-green-600  focus:ring-opacity-50"
       />
        {errors.salary && <span className="text-red-600">{errors.salary}</span>}
-      <label htmlFor="image" className="font-normal tracking-medium">Image</label>
+      {/* <label htmlFor="image" className="font-normal tracking-medium">Image</label>
       <input
         type="file"
         name="image"
@@ -328,7 +328,19 @@ export default function AddEmployee() {
           setErrors({...errors, image:''})
         }}
         className="rounded px-4 h-8 focus:outline-none focus:ring-2 focus:ring-green-600  focus:ring-opacity-50"
-      />
+      /> */}
+       <div className="flex items-center space-x-4">
+            <label htmlFor="waec" className="w-48">Image</label>
+            <input
+              type="file"
+              id="waec"
+              onChange={(e) => {
+                setEmployee({...employee, image: e.target.files[0]})
+                setErrors({...errors, image:''})
+              }}
+              className="w-full p-2 border rounded"
+            />
+          </div>
        {errors.image && <span className="text-red-600">{errors.image}</span>}
       <button
         type="submit"

@@ -6,6 +6,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { FaHouse, FaPowerOff } from 'react-icons/fa6';
 import { FaUserFriends } from 'react-icons/fa';
 import { TbCategoryFilled } from 'react-icons/tb';
+import { MdFileUpload } from "react-icons/md";
 import { IoPersonSharp } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -142,8 +143,8 @@ const Layout = () => {
   const fetchUserRoleAndSetSidebar = async () => {
     try {
       const response = await axios.get('http://localhost:3000/auth/dashboard', { withCredentials: true });
-      const role = response.data.role;  
-      // console.log('Role:', role);
+      const role = response.data.user.role;  
+      console.log('Role:', role);
 
       // Dynamically set sidebar items based on the role
       if (role === 'admin') {
@@ -157,7 +158,9 @@ const Layout = () => {
       } else {
         setSidebarItems([
           { to: '/user/dashboard', icon: <FaHouse />, label: 'Dashboard' },
+          { to: '/user/update', icon: <MdFileUpload />, label: 'Update Documents' },
           { to: '/user/profile', icon: <IoPersonSharp />, label: 'Profile' },
+
           {  icon: <FaPowerOff />, label: 'Logout', onClick: handleLogout }
         ]);
       }

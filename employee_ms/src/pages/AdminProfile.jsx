@@ -30,11 +30,8 @@ const Profile = () => {
         <h5 >Email:</h5>
         <h5>{a.email}</h5>
         </div>
-        <hr />
-       <div className="flex justify-between">
-       <h5 >Password:</h5>
-       <h5>{a.password}</h5>
-       </div>
+     
+      
       
       </div>
      </div>

@@ -138,7 +138,7 @@ axios.delete(`http://localhost:3000/admin/delete_employee/${id}`)
           <td className="px-4 py-2 text-sm text-gray-700">{e.category_id}</td>
           <td className="px-4 py-2 text-sm text-gray-700">{e.nin}</td>
           <td className="px-4 py-2 text-sm text-gray-700">{e.salary}</td>
-          <td className="px-4 py-2 text-sm flex ">
+          <td className="px-4 py-2 text-sm flex">
             <Link to={`/admin/edit_employee/${e.id}`} className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none">Edit</Link>
             <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none ml-2" onClick={()=>handleDelete(e.id)}>Delete</button>
           </td>

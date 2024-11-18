@@ -14,6 +14,8 @@ import Register from './components/Register';
 import EditEmployee from './components/EditEmployee';
 import EditAdmin from './components/EditAdmin';
 import UserProfile from './pages/UserProfile';
+// import UpdateUserDashboard from './pages/UserDashboard';
+import UpdateDocuments from './pages/UpdateDocuments';
 
 
 const router = createBrowserRouter([
@@ -89,7 +91,10 @@ const router = createBrowserRouter([
         path: "profile",
         element: <UserProfile />,
       },
-  
+      {
+        path: "update",
+        element: <UpdateDocuments />,
+      },
     
     ],
   },

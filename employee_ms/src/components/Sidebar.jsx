@@ -31,15 +31,15 @@ const SidebarItem = ({ to, children, onClick }) => {
 
 const Sidebar = ({ items }) => {
   return (
-    <div className="sidebar w-32 md:w-64 bg-gray-700 text-white ">
+    <div className="sidebar p-2 w-32 md:w-64 bg-gray-700 text-white ">
       <ul>
       <Link to='/admin/dashboard' class="text-xl font-semibold md:px-6">EMS</Link>
         {items.map((item, index) => (
           <li key={index} >
             
             <SidebarItem to={item.to} onClick={item.onClick}>
-              <div className='flex gap-4 items-center w-full h-full py-2'>
-              {item.icon} {item.label}
+              <div className='flex gap-4 items-center w-full h-full py-2 px-1'>
+              <div className='w-18'>{item.icon}</div> {item.label}
               </div>
              
             </SidebarItem>

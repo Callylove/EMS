@@ -51,6 +51,22 @@ export default function AdminDashboard() {
     AdminRecords();
 
    },[])
+   const handleDelete = (id) => {
+    axios.delete(`http://localhost:3000/admin/delete_admin/${id}`)
+    .then(res=>{
+      if(res.data.Status){
+        window.location.reload()
+      }else{
+        console.log(res.data.error);
+        
+      }
+    })
+    .catch(err=>{
+      console.log(err);
+      
+    })
+      }
+    
   return (
     <div >  <h1 className="font-bold text-xl mb-12">Welcome Admin</h1>
     <div className="p-3 flex flex-col md:flex-row justify-around mt-3">
@@ -106,7 +122,7 @@ export default function AdminDashboard() {
           <td className="px-4 py-2 text-sm text-gray-700">{e.email}</td>
           <td className="px-4 py-2 text-sm flex ">
             <Link to={`/admin/edit_admin/${e.id}`} className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none">Edit</Link>
-            <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none ml-2" >Delete</button>
+            <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none ml-2" onClick={()=>handleDelete(e.id)} >Delete</button>
           </td>
         </tr>
       ))
