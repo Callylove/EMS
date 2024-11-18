@@ -146,6 +146,7 @@ const UserDashboard = () => {
               {userDetails?.employmentLetter ? 'Uploaded' : 'Not uploaded'}
             </span>
           </div>
+          <hr />
           <div className="flex justify-between">
             <strong className="text-gray-600">Job termination/Retirement letter:</strong>
             <span className="text-gray-800">
