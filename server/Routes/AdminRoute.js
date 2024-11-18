@@ -238,6 +238,17 @@ router.get('/admin_records', (req,res)=>{
     return res.json({ Status: true, Result: result });
 })
 })
+router.delete('/delete_admin/:id',(req,res)=>{
+  const {id} = req.params
+  const sql = "DELETE from admin WHERE id = ?"
+  conn.query(sql,[id], (err,result)=>{
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.json({ Status: false, error: 'Query Error' });
+    }
+    return res.json({ Status: true, Result: result });
+})
+})
 // router.get('/logout', (req,res)=>{
 //   res.clearCookie('token')
 //   return res.json({ Status: true});
